@@ -121,22 +121,41 @@ function cleanupVideoListeners() {
 
 async function loadEpitaphData(bvid) {
   try {
-    const indexUrl = chrome.runtime.getURL('epitaph/index.json');
-    const idxRes = await fetch(indexUrl);
-    if (!idxRes.ok) throw new Error(`index.json HTTP ${idxRes.status}`);
+    // Try loading from GitHub first
+    const githubBaseUrl = 'https://raw.githubusercontent.com/moraxborax/21st-Century-Schizoid-Ad/main';
+    let indexUrl = `${githubBaseUrl}/epitaph/index.json`;
+    let idxRes = await fetch(indexUrl, { cache: 'no-store' });
+    
+    // Fallback to local if GitHub fails
+    if (!idxRes.ok) {
+      console.log('Falling back to local index.json');
+      indexUrl = chrome.runtime.getURL('epitaph/index.json');
+      idxRes = await fetch(indexUrl);
+      if (!idxRes.ok) throw new Error(`Failed to load index.json from both GitHub and local`);
+    }
+    
     const indexData = await idxRes.json();
-
     const videoInfo = Array.isArray(indexData.videos)
       ? indexData.videos.find(v => v.bvid === bvid)
       : null;
+      
     if (!videoInfo) {
       console.info(`[Epitaph] ${bvid} 未在索引中`);
       return;
     }
 
-    const dataUrl = chrome.runtime.getURL(`epitaph/data/${bvid}.json`);
-    const dataRes = await fetch(dataUrl);
-    if (!dataRes.ok) throw new Error(`${bvid}.json HTTP ${dataRes.status}`);
+    // Try loading video data from GitHub first
+    let dataUrl = `${githubBaseUrl}/epitaph/data/${bvid}.json`;
+    let dataRes = await fetch(dataUrl, { cache: 'no-store' });
+    
+    // Fallback to local if GitHub fails
+    if (!dataRes.ok) {
+      console.log('Falling back to local video data');
+      dataUrl = chrome.runtime.getURL(`epitaph/data/${bvid}.json`);
+      dataRes = await fetch(dataUrl);
+      if (!dataRes.ok) throw new Error(`Failed to load ${bvid}.json from both GitHub and local`);
+    }
+    
     const videoData = await dataRes.json();
 
     const p = state.currentPart;
@@ -154,7 +173,7 @@ async function loadEpitaphData(bvid) {
 function onTimeUpdate() {
   if (!state.config.enabled) return;
   if (!state.video || state.currentSegments.length === 0) return;
-
+  
   const t = state.video.currentTime;
   const seg = state.currentSegments.find(s => t >= s.start && t < s.end);
 

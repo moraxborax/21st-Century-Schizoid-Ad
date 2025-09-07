@@ -12,7 +12,8 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://www.bilibili.com/*"
+    "https://www.bilibili.com/*",
+    "https://raw.githubusercontent.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"
