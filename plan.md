@@ -14,7 +14,7 @@
 - 核心用户故事
   - 作为观众，当 B 站视频播放到广告时，我会在画面上看到“前方有广告。要跳过吗？”的提示。
   - 我可以点击“跳过”直接跳到正片；或选择“不要跳过”，提示会一直显示到广告结束。
-  - 我可以配置策略：只使用“社区时间轴”、只使用“AI 检测”、或“两者融合”。
+  - 我可以配置策略：只使用“社区时间轴”、只使用“AI 检测”、或“两者融合”，并设置不同广告类型的处理方式（跳过/提示/不处理）。
 
 
 ## 2) 覆盖范围与页面类型
@@ -29,7 +29,7 @@
 - `manifest.json`（MV3）
   - `content_scripts`: 注入到 B 站视频页面；负责 DOM 监听、视频时间线跟踪、UI 覆盖层注入、提示/跳转。
   - `background`（Service Worker）: 处理网络请求、缓存、与“Epitaph”数据交互、长生命周期任务（例如节流/退避、更新轮询）。
-  - `options_page`: 配置页（开关、策略、阈值、隐私选项）。
+  - `options_page`: 配置页（开关、策略、广告类型过滤、内容价值阈值、隐私选项）。
   - `action`（popup 可选）: 快速查看当前视频的检测来源、已知广告段、手动标注入口。
   - 权限：`storage`、`scripting`、`activeTab`、`declarativeNetRequest`（如需）、匹配域名 `*://www.bilibili.com/*`。
 - 通信
@@ -48,7 +48,7 @@ A. 社区时间轴（Epitaph）
   - 若命中，`content_script` 在时间线进入片段时弹提示，并支持一键跳过到 `end`。
 - 数据模型（建议）
   - 键：`BVID`（必须）、`p`（可选，默认 1）、`duration`（冗余校验）。
-  - 片段：`{ start: number, end: number, type: "ad" | "selfpromo" | "sponsor", source: "community", confidence: 0~1, submitted_by, submitted_at }`
+  - 片段：`{ start: number, end: number, type: "hard_ad" | "soft_ad" | "sponsor_segment" | "self_promo" | "product_showcase", source: "community", confidence: 0~1, content_value: 0~1, disruptiveness: 0~1, submitted_by, submitted_at }`
   - 版本：`schema_version`
 - 仓库结构（Epitaph 建议）
   - `data/index.json`：索引（BVID -> 文件路径/摘要/etag）。
@@ -58,11 +58,22 @@ A. 社区时间轴（Epitaph）
       "bvid": "BV1xxxxxxx",
       "duration": 1234.56,
       "parts": {
-        "1": [{ "start": 35.1, "end": 82.7, "type": "ad", "confidence": 0.97 }],
+        "1": [
+          { 
+            "start": 35.1, 
+            "end": 82.7, 
+            "type": "soft_ad",
+            "confidence": 0.97,
+            "content_value": 0.7,
+            "disruptiveness": 0.3,
+            "product_name": "Bambu Lab X1",
+            "product_category": "3D打印机"
+          }
+        ],
         "2": []
       },
       "updated_at": "2025-09-07T00:00:00Z",
-      "schema_version": 1
+      "schema_version": 2
     }
     ```
 - 分发与缓存
@@ -78,7 +89,7 @@ A. 社区时间轴（Epitaph）
 - 客户端 UI/交互
   - 在播放器加两个按钮：“标记广告开始”“标记广告结束”（热键，如 Alt+[、Alt+]）。
   - 自动填入当前 `currentTime`，用户可微调毫秒级；提交时生成 JSON。
-  - 在 Popup/Options 显示当前视频的已知片段列表；允许本地覆盖（临时忽略/修正）。
+  - 在 Popup/Options 显示当前视频的已知片段列表，包含类型、置信度和内容价值；允许本地覆盖（临时忽略/修正/调整类型）。
 
 B. AI 检测（本地优先，可选远程）
 - 目标
@@ -99,6 +110,60 @@ B. AI 检测（本地优先，可选远程）
   - 将多源信号融合成若干候选片段，打分 `confidence`。
   - 低于阈值仅提示“疑似广告”；高于阈值按普通广告处理。
   - 与 Epitaph 结果做优先级合并：社区 > 高置信 AI > 低置信 AI。
+
+## 5) 广告类型与内容价值评估
+
+### 广告类型（type）
+- `hard_ad` - 硬广：直接的产品推销或读稿，内容价值低（如“点击下方链接购买”）。
+- `soft_ad` - 软广：将产品融入内容，有一定信息量（如“这期视频用Bambu Lab X1打印”）。
+- `sponsor_segment` - 赞助商指定片段：明确标注的赞助内容。
+- `product_showcase` - 产品展示：以展示产品为主的片段，但包含实用信息（如3D打印作品展示）。
+- `self_promo` - 自推内容：UP主推广自己的其他内容。
+
+### 内容评估维度
+1. **内容价值 (content_value: 0-1)**
+   - 0.8-1.0：高价值（教程、深度评测）
+   - 0.5-0.8：中等价值（产品展示+实用技巧）
+   - 0.2-0.5：低价值（简单展示）
+   - 0-0.2：纯广告
+
+2. **干扰度 (disruptiveness: 0-1)**
+   - 0.8-1.0：强烈打断（突然插入、音量骤增）
+   - 0.5-0.8：明显但合理
+   - 0-0.5：自然过渡
+
+### 用户设置建议
+```typescript
+interface UserSettings {
+  // 全局开关
+  enabled: boolean;
+  
+  // 处理策略
+  strategies: {
+    community: boolean;
+    ai: boolean;
+    fallbackToAI: boolean; // 社区无数据时使用AI
+  };
+  
+  // 广告类型处理
+  adTypeHandling: {
+    [type in AdType]: 'skip' | 'ask' | 'ignore';
+  };
+  
+  // 内容价值阈值
+  minContentValue: number; // 0-1，低于此值的内容将被跳过
+  
+  // 高级设置
+  advanced: {
+    confidenceThreshold: number; // 0.5-1.0
+    showDebugInfo: boolean;
+    hotkeys: {
+      markStart: string; // 默认 Alt+[
+      markEnd: string;   // 默认 Alt+]
+    };
+  };
+}
+```
 - 性能与能耗
   - 仅在视频可见、标签页激活时运行；空闲/后台暂停。
   - 启发式先行，模型推理按需触发；限频、降采样、早停。
