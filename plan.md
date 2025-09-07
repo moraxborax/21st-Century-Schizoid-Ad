@@ -51,8 +51,8 @@ A. 社区时间轴（Epitaph）
   - 片段：`{ start: number, end: number, type: "hard_ad" | "soft_ad" | "sponsor_segment" | "self_promo" | "product_showcase", source: "community", confidence: 0~1, content_value: 0~1, disruptiveness: 0~1, submitted_by, submitted_at }`
   - 版本：`schema_version`
 - 仓库结构（Epitaph 建议）
-  - `data/index.toml`：索引（BVID -> 文件路径/摘要/etag）。
-  - `data/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：
+  - `epitaph/index.toml`：索引（BVID -> 文件路径/摘要/etag）。
+  - `epitaph/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：
     ```toml
     bvid = "BV1xxxxxxx"
     duration = 1234.56

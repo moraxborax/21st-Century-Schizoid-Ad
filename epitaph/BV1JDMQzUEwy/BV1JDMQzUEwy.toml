@@ -18,7 +18,7 @@ schema_version = 2
 [[parts.1.segments]]
 start = 186
 end = 196
-type = "promo"
+type = "sponsor_segment"
 confidence = 0.97
 content_value = 0.6
 disruptiveness = 0.8
