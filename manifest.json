@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "21st Century Schizoid Ad",
+  "description": "Skip uploader-inserted ads on Bilibili using community timing (Epitaph).",
+  "version": "0.1.0",
+  "minimum_chrome_version": "114",
+  "action": {
+    "default_title": "21st Century Schizoid Ad"
+  },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.bilibili.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "options_page": "options/options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://www.bilibili.com/video/*"],
+      "js": ["src/content/bilibili.js"],
+      "css": ["src/content/styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "epitaph/index.json",
+        "epitaph/*/*.json"
+      ],
+      "matches": ["https://www.bilibili.com/*"]
+    }
+  ]
+}

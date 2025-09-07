@@ -51,33 +51,35 @@ A. 社区时间轴（Epitaph）
   - 片段：`{ start: number, end: number, type: "hard_ad" | "soft_ad" | "sponsor_segment" | "self_promo" | "product_showcase", source: "community", confidence: 0~1, content_value: 0~1, disruptiveness: 0~1, submitted_by, submitted_at }`
   - 版本：`schema_version`
 - 仓库结构（Epitaph 建议）
-  - `epitaph/index.toml`：索引（BVID -> 文件路径/摘要/etag）。
-  - `epitaph/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：
-    ```toml
-    bvid = "BV1xxxxxxx"
-    duration = 1234.56
-    updated_at = "2025-09-07T00:00:00Z"
-    schema_version = 2
-
-    [parts.1]
-    
-    [[parts.1.segments]]
-    start = 35.1
-    end = 82.7
-    type = "soft_ad"
-    confidence = 0.97
-    content_value = 0.7
-    disruptiveness = 0.3
-    product_name = "Bambu Lab X1"
-    product_category = "3D打印机"
-
-    [parts.2]
-    segments = []
+  - `epitaph/index.json`：索引（BVID -> 文件路径/摘要/etag）。
+  - `epitaph/BVxx/xxxxx.json`：单视频数据，包含多 P 结构，例如：
+    ```json
+    {
+      "bvid": "BV1xxxxxxx",
+      "duration": 1234.56,
+      "updated_at": "2025-09-07T00:00:00Z",
+      "schema_version": 2,
+      "parts": {
+        "1": [
+          {
+            "start": 35.1,
+            "end": 82.7,
+            "type": "soft_ad",
+            "confidence": 0.97,
+            "content_value": 0.7,
+            "disruptiveness": 0.3,
+            "product_name": "Bambu Lab X1",
+            "product_category": "3D打印机"
+          }
+        ],
+        "2": []
+      }
+    }
     ```
 - 分发与缓存
-  - 纯静态分发（GitHub Pages 原始 TOML / CDN 缓存）。
+  - 纯静态分发（GitHub Pages 原始 JSON / CDN 缓存）。
   - 扩展侧：
-    - 首次请求按 `index.toml` -> 视频 TOML。
+    - 首次请求按 `index.json` -> 视频 JSON。
     - 使用 `etag/last-modified` 做增量/过期控制。
     - 本地缓存 TTL（例如 7 天），命中直接使用；失效再校验。
 - 贡献与审核流程
@@ -131,35 +133,31 @@ B. AI 检测（本地优先，可选远程）
    - 0-0.5：自然过渡
 
 ### 用户设置建议
-```toml
-# 全局开关
-enabled = true
-
-# 处理策略
-[strategies]
-community = true
-ai = true
-fallbackToAI = true  # 社区无数据时使用AI
-
-# 广告类型处理
-[adTypeHandling]
-hard_ad = "skip"     # skip/ask/ignore
-soft_ad = "ask"
-sponsor_segment = "ask"
-product_showcase = "ignore"
-self_promo = "ignore"
-
-# 内容价值阈值 (0-1，低于此值的内容将被跳过)
-minContentValue = 0.3
-
-# 高级设置
-[advanced]
-confidenceThreshold = 0.7  # 0.5-1.0
-showDebugInfo = false
-
-[advanced.hotkeys]
-markStart = "Alt+["  # 标记广告开始
-markEnd = "Alt+]"    # 标记广告结束
+```json
+{
+  "enabled": true,
+  "strategies": {
+    "community": true,
+    "ai": true,
+    "fallbackToAI": true
+  },
+  "adTypeHandling": {
+    "hard_ad": "skip",
+    "soft_ad": "ask",
+    "sponsor_segment": "ask",
+    "product_showcase": "ignore",
+    "self_promo": "ignore"
+  },
+  "minContentValue": 0.3,
+  "advanced": {
+    "confidenceThreshold": 0.7,
+    "showDebugInfo": false,
+    "hotkeys": {
+      "markStart": "Alt+[",
+      "markEnd": "Alt+]"
+    }
+  }
+}
 ```
 - 性能与能耗
   - 仅在视频可见、标签页激活时运行；空闲/后台暂停。

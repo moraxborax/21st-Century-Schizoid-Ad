@@ -1,6 +1,8 @@
 # Epitaph Index
 # This file serves as a registry of all videos with cataloged ad segments
 # Last updated: 2025-09-07
+#主要还是用json，但是toml留一份保存信息
+
 
 # Schema version
 schema_version = 2
@@ -37,3 +39,4 @@ segment_types = [
 maintainer = "moraxborax"
 repository = "https://github.com/moraxborax/21st-Century-Schizoid-Ad"
 license = "MIT"
+

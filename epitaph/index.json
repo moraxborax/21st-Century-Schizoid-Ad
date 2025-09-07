@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "last_updated": "2025-09-07T12:49:03+08:00",
+  "videos": [
+    {
+      "bvid": "BV1JDMQzUEwy",
+      "parts": 1,
+      "updated_at": "2025-09-07T12:49:03+08:00"
+    }
+  ],
+  "config": {
+    "min_confidence": 0.7,
+    "min_confirmations": 2,
+    "segment_types": [
+      "hard_ad",
+      "soft_ad",
+      "sponsor_segment",
+      "self_promo",
+      "product_showcase"
+    ]
+  },
+  "metadata": {
+    "maintainer": "moraxborax",
+    "repository": "https://github.com/moraxborax/21st-Century-Schizoid-Ad",
+    "license": "MIT"
+  }
+}

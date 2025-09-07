@@ -1,0 +1,44 @@
+#schizoid-ad-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 80px;
+  transform: translateX(-50%);
+  z-index: 999999; /* 高于B站UI */
+  display: none;
+  pointer-events: none; /* 仅内部按钮可点 */
+}
+
+#schizoid-ad-notice .schizoid-ad-card {
+  pointer-events: auto;
+  background: rgba(20, 20, 20, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  backdrop-filter: blur(6px);
+}
+
+#schizoid-ad-notice .schizoid-ad-text {
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+#schizoid-ad-notice .schizoid-ad-btn {
+  appearance: none;
+  border: none;
+  background: #ff6699;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#schizoid-ad-notice .schizoid-ad-btn:hover {
+  background: #ff4d88;
+}
