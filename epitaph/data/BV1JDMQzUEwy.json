@@ -17,6 +17,17 @@
         "description": "90-96秒软广描述（可添加更多详情）"
       },
       {
+        "start": 132,
+        "end": 158,
+        "type": "soft_ad",
+        "confidence": 0.9,
+        "content_value": 0.7,
+        "disruptiveness": 0.3,
+        "product_name": "海尔洗衣机",
+        "product_category": "洗衣机",
+        "description": "90-96秒软广描述（可添加更多详情）"
+      },
+      {
         "start": 186,
         "end": 197,
         "type": "sponsor_segment",
