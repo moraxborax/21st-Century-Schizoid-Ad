@@ -25,6 +25,16 @@
         "disruptiveness": 0.8,
         "product_name": "海尔洗衣机",
         "product_category": "洗衣机"
+      }, 
+      {
+        "start": 282,
+        "end": 299,
+        "type": "sponsor_segment",
+        "confidence": 0.97,
+        "content_value": 0.4,
+        "disruptiveness": 0.6,
+        "product_name": "海尔洗衣机",
+        "product_category": "洗衣机"
       }
     ],
     "2": []
