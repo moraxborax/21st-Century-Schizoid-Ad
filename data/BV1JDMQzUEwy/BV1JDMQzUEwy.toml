@@ -1,0 +1,29 @@
+#- 数据模型（建议）
+#  - 键：`BVID`（必须）、`p`（可选，默认 1）、`duration`（冗余校验）。
+#  - 片段：`{ start: number, end: number, type: "hard_ad" | "soft_ad" | "sponsor_segment" | "self_promo" | "product_showcase", source: "community", confidence: 0~1, content_value: 0~1, disruptiveness: 0~1, submitted_by, submitted_at }`
+#  - 版本：`schema_version`
+#- 仓库结构（Epitaph 建议）
+#  - `data/index.toml`：索引（BVID -> 文件路径/摘要/etag）。
+#  - `data/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：
+
+
+
+bvid = "BV1JDMQzUEwy"
+duration = 314
+updated_at = 2025-09-07T12:43:32+08:00
+schema_version = 2
+
+[parts.1]
+
+[[parts.1.segments]]
+start = 186
+end = 196
+type = "promo"
+confidence = 0.97
+content_value = 0.6
+disruptiveness = 0.8
+product_name = "海尔洗衣机"
+product_category = "洗衣机"
+
+[parts.2]
+segments = []
