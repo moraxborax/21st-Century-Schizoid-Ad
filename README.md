@@ -58,7 +58,7 @@
 
 - 仅支持 www.bilibili.com 的视频播放页
 - 需要手动刷新页面才能应用配置更改
-- 本插件含有大量AIGC，请谨慎使用
+- 本插件**大量使用AI工具[Windsurf](https://windsurf.com/)**，请谨慎使用。如果想要重现可以直接基于[plan.md](/plan.md)用AI工具生成。
 
 ## 许可证
 
