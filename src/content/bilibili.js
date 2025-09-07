@@ -134,7 +134,7 @@ async function loadEpitaphData(bvid) {
       return;
     }
 
-    const dataUrl = chrome.runtime.getURL(`epitaph/${bvid}/${bvid}.json`);
+    const dataUrl = chrome.runtime.getURL(`epitaph/data/${bvid}.json`);
     const dataRes = await fetch(dataUrl);
     if (!dataRes.ok) throw new Error(`${bvid}.json HTTP ${dataRes.status}`);
     const videoData = await dataRes.json();
@@ -226,7 +226,7 @@ function ensureNoticeEl() {
   el.innerHTML = `
     <div class="schizoid-ad-card">
       <span class="schizoid-ad-text">前方有广告。要跳过吗？</span>
-      <button class="schizoid-ad-btn" type="button">跳过广告</button>
+      <button class="schizoid-ad-btn" type="button">跳跃吧！绯红之王</button>
     </div>
   `;
   document.body.appendChild(el);

@@ -30,7 +30,7 @@
     {
       "resources": [
         "epitaph/index.json",
-        "epitaph/*/*.json"
+        "epitaph/data/*.json"
       ],
       "matches": ["https://www.bilibili.com/*"]
     }
