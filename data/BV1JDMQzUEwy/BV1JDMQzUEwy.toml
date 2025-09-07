@@ -10,7 +10,7 @@
 
 bvid = "BV1JDMQzUEwy"
 duration = 314
-updated_at = "2025-09-07T00:00:00Z"
+updated_at = 2025-09-07T12:43:32+08:00
 schema_version = 2
 
 [parts.1]
@@ -20,7 +20,7 @@ start = 186
 end = 196
 type = "promo"
 confidence = 0.97
-content_value = 0.7
+content_value = 0.6
 disruptiveness = 0.8
 product_name = "海尔洗衣机"
 product_category = "洗衣机"
