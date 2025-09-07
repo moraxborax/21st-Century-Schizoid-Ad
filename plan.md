@@ -52,7 +52,7 @@ A. 社区时间轴（Epitaph）
   - 版本：`schema_version`
 - 仓库结构（Epitaph 建议）
   - `data/index.toml`：索引（BVID -> 文件路径/摘要/etag）。
-  - `data/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：·
+  - `data/BVxx/xxxxx.toml`：单视频数据，包含多 P 结构，例如：
     ```toml
     bvid = "BV1xxxxxxx"
     duration = 1234.56
