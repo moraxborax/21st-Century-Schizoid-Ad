@@ -1,0 +1,22 @@
+{
+    "bvid": "BV1wZYxzLE8H",
+    "duration": 492,
+    "updated_at": "2025-09-07T12:43:32+08:00",
+    "schema_version": 2,
+    "parts": {
+      "1": [
+        {
+          "start": 222,
+          "end": 310,
+          "type": "sponsor_segment",
+          "confidence": 0.97,
+          "content_value": 0.3,
+          "disruptiveness": 0.9,
+          "product_name": "电动牙刷",
+          "product_category": "电动牙刷"
+        }
+      ],
+      "2": []
+    }
+  }
+  
